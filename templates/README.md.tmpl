@@ -1,0 +1,59 @@
+<!-- 插件 README 骨架：复制为 README.md（中文）与 README.en.md（英文） -->
+# <包名>
+
+[![npm version](https://img.shields.io/npm/v/<包名>?color=2ea44f&label=npm)](https://www.npmjs.com/package/<包名>)
+[![ci](https://github.com/<owner>/<repo>/actions/workflows/ci.yml/badge.svg)](https://github.com/<owner>/<repo>/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+**一句话说明**（各插件市场会抓这段）。
+
+> 若是 fork，这里写明：上游仓库链接、许可、**修了哪些问题**（附证据）、保留了哪些署名。审核方最看重这段的诚实度。
+
+## 功能
+
+- 功能点 1：<做什么、怎么触发、结果是什么>
+- 功能点 2：<……>
+
+## 安装
+
+```sh
+# 从 npm 安装（推荐）
+dsh plugin --profile <profile> add <包名>
+
+# 或从 GitHub 安装
+dsh plugin --profile <profile> add github:<owner>/<repo>
+
+# 本地开发（link 安装：改文件即热更，无需重启）
+dsh plugin --profile <profile> add <本仓库绝对路径>
+```
+
+## 用法
+
+<如何在界面里使用：从哪进、点什么、看到什么。>
+
+## 工作原理
+
+<注册了哪些槽位/事件、数据存在哪、有无网络请求。审核方与用户都关心"有没有副作用"。>
+
+## 开发
+
+```sh
+node tools/check-manifest.mjs    # 清单与契约自检（CI 同款）
+node tools/diag-sink.mjs         # 可选：本地诊断接收端
+```
+
+## 发版（维护者）
+
+发布走 **npm Trusted Publishing（OIDC）**，仓库里不保存 token：
+
+1. 改 `package.json` 的 `version`，并在 `CHANGELOG.md` 记录
+2. `git tag -a v<版本> -m "v<版本>" && git push origin main --follow-tags`
+3. `release.yml` 自动校验 → 自检 → `npm publish --provenance`
+
+## 已知限制
+
+- <边界与不支持的场景，写清楚比藏着好>
+
+## 许可
+
+MIT，见 [LICENSE](./LICENSE)。

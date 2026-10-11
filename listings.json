@@ -1,0 +1,162 @@
+{
+  "schema": "dsh-plugin-release-kit/listings/v1",
+  "updated": "2026-10-11",
+  "notes": "占位符：{owner} {repo} {pkg} {repoUrl} {descEn} {descZh}。verify 用于判断是否已收录；submit 用于自动化提交。",
+  "auto": [
+    {
+      "id": "dsh-market",
+      "name": "DSH Market (dsh.market)",
+      "cadence": "每日 03:00 (+08:00)",
+      "verify": { "type": "githubJson", "repo": "2BingLing/dsh-market", "path": "web/public/plugins-lite.json", "ref": "master", "match": "{owner}/{repo}" }
+    },
+    {
+      "id": "dsh-plugin-org",
+      "name": "dsh-plugin.org",
+      "cadence": "near-realtime",
+      "verify": { "type": "detailPage", "url": "https://dsh-plugin.org/zh/plugins/{owner}/{repo}" }
+    },
+    {
+      "id": "dsh-pub",
+      "name": "dsh.pub",
+      "cadence": "topic 同步",
+      "verify": { "type": "githubJson", "repo": "dsh-pub/dsh-pub", "path": "packages/catalog/src/community.generated.json", "ref": "HEAD", "match": "github:{owner}/{repo}" },
+      "note": "无需人工提交：提交会被判 already_listed"
+    },
+    {
+      "id": "dsh-xray",
+      "name": "dsh-xray",
+      "cadence": "按仓库批量生成",
+      "verify": { "type": "detailPage", "url": "https://unstone.github.io/dsh-xray/p/{owner}__{repo}.html" }
+    },
+    {
+      "id": "dsh-marketplace",
+      "name": "DSH Marketplace (dshmarketplace.dev)",
+      "cadence": "每日",
+      "verify": { "type": "detailPage", "url": "https://dshmarketplace.dev/plugins/{owner}/{repo}" },
+      "note": "Next.js SPA；查不到接口时以详情页 200/404 为准"
+    },
+    {
+      "id": "dshplugin-market",
+      "name": "dshplugin.market",
+      "cadence": "纯前端 topic 扫描",
+      "verify": { "type": "detailPage", "url": "https://dshplugin.market/p/{owner}/{repo}" }
+    },
+    {
+      "id": "1024store",
+      "name": "1024Store (deepseek1024.com)",
+      "cadence": "增量 + 定期全量对账",
+      "verify": { "type": "apiSearch", "url": "https://api.deepseek1024.com/v1/plugins/search?q={pkg}", "jsonPath": "total" }
+    }
+  ],
+  "submit": [
+    {
+      "id": "awesome-dsh-plugin",
+      "name": "Awesome DSH Plugin（in-DSH dshmarket 的目录源）",
+      "route": "pr",
+      "repo": "awesome-dsh-plugin/awesome-dsh-plugin",
+      "file": "data/plugins/{owner}__{repo}.yml",
+      "createFile": true,
+      "content": "url: {repoUrl}\nname: {owner}/{repo}\ncategory: ui\ndescription:\n  en: '{descEn}'\n  zh: '{descZh}'\n",
+      "gate": "仓库需满 1 天（CI 硬门槛）",
+      "prTitle": "docs: add {owner}/{repo}",
+      "prBodyTemplate": "Adds `data/plugins/{owner}__{repo}.yml` — one entry, no other files touched.\n\n## What the plugin does\n\n{descEn}\n\n## Facts\n\n- Repository: {repoUrl}\n- `package.json` declares `dsh.bundle.patch` → `cordis.patch.yml` at the repository root\n- npm: `{pkg}`\n- License: MIT · category: `ui`\n"
+    },
+    {
+      "id": "dsh-plugin-radar",
+      "name": "DSH Plugin Radar",
+      "route": "pr",
+      "repo": "AdamPlatin123/dsh-plugin-radar",
+      "file": "PLUGINS.md",
+      "insert": { "section": "## 🔌", "line": "| {pkg} | [{owner}/{repo}]({repoUrl}) | {descZh} | 待测 |" },
+      "prTitle": "docs: 登记 {pkg}",
+      "prBodyTemplate": "在「🔌 单插件」表格末尾追加一行登记 `{pkg}`。\n\n- 仓库：{repoUrl}\n- 安装：`dsh plugin --profile <profile> add {pkg}`\n- 许可：MIT\n\n仅改动 `PLUGINS.md` 一行，未触碰其他条目。\n"
+    },
+    {
+      "id": "awesome-deepseek-harness",
+      "name": "Awesome DeepSeek Harness",
+      "route": "pr",
+      "repo": "0xsline/awesome-deepseek-harness",
+      "files": [
+        { "path": "README.zh-CN.md", "insert": { "section": "## UI, Themes & Interaction", "line": "- [{owner}/{repo}]({repoUrl}) - {descZh}" } },
+        { "path": "README.md", "insert": { "section": "## UI, Themes & Interaction", "line": "- [{owner}/{repo}]({repoUrl}) - {descEn}" } }
+      ],
+      "prTitle": "docs: add {pkg}",
+      "prBodyTemplate": "Adds one line to the **UI, Themes & Interaction** category of both language lists.\n\n- Repository: {repoUrl}\n- Install: `dsh plugin --profile <profile> add {pkg}`\n- License: MIT\n\nOnly the two list files are touched (one line each).\n"
+    },
+    {
+      "id": "dsh-marketplace-curated",
+      "name": "DSH Marketplace 精选列表",
+      "route": "pr",
+      "repo": "DshMarketPlace/awesome-dsh-plugin",
+      "file": "data/curated.yml",
+      "insert": { "section": "  - name: UI & Experience", "line": "      - repo: {owner}/{repo}" },
+      "gate": "需 `npm test` 重新生成两份 README 与 data/marketplace-cache.json 一起提交；topic 准入要求 ≥10 个提交",
+      "skipByDefault": true,
+      "prTitle": "docs: add {owner}/{repo}",
+      "prBodyTemplate": "Adds `{owner}/{repo}` to the UI & Experience category.\n"
+    },
+    {
+      "id": "hacksing",
+      "name": "HackSing DSH Plugins",
+      "route": "issue",
+      "repo": "HackSing/dsh-plugins",
+      "title": "Submit a plugin: {pkg}",
+      "bodyTemplate": "### Plugin repository\n{repoUrl}\n\n### Primary value\n{descEn}\n\n### Primary category\nUI\n\n### Installation and removal\nInstall: `dsh plugin --profile <profile> add {pkg}`\nRemove: `dsh plugin --profile <profile> remove {pkg}`\n\n### Compatibility and verification\n{compat}\n\n### Submission checklist\n- [x] Public repository with MIT license\n- [x] `package.json` declares `dsh.bundle.patch`; `cordis.patch.yml` at the root\n- [x] README documents install and usage\n- [x] Topics: `dsh-plugin` `deepseek-harness` `dsh` `dsh-bundle`\n"
+    },
+    {
+      "id": "cccakeee",
+      "name": "DeepSeek Harness Plugins (cccakeee)",
+      "route": "issue",
+      "repo": "cccakeee/awesome-dsh-plugins",
+      "title": "Add {pkg}",
+      "bodyTemplate": "提交收录：**{pkg}**\n\n{descZh}\n\n- 仓库：{repoUrl}\n- 安装：`dsh plugin --profile <profile> add {pkg}`\n- 许可：MIT\n- 已验证 DSH 版本：{dshVersion}\n"
+    },
+    {
+      "id": "dshplugin-me",
+      "name": "dshplugin.me",
+      "route": "issue",
+      "repo": "dshplugin-me/dsh-plugin-radar",
+      "title": "List {pkg}",
+      "bodyTemplate": "Requesting a listing for **{pkg}**.\n\n{descEn}\n\n- Repository: {repoUrl}\n- Install: `dsh plugin --profile <profile> add {pkg}`\n- License: MIT\n"
+    },
+    {
+      "id": "1024store-issue",
+      "name": "1024Store（Issue 通道，响应慢）",
+      "route": "issue",
+      "repo": "imsai-sh/awesome-deepseek-harness-plugins",
+      "skipByDefault": true,
+      "title": "提交插件：{pkg}",
+      "bodyTemplate": "提交收录到 1024Store 目录：\n\n- 插件名：`{pkg}`\n- 一句话：{descZh}\n- 仓库：{repoUrl}\n- 安装：`dsh plugin --profile <profile> add {pkg}`\n- 许可：MIT\n"
+    },
+    {
+      "id": "dshplugin-world",
+      "name": "dshplugin.world（在**自己仓库**开 issue）",
+      "route": "issue",
+      "repo": "{owner}/{repo}",
+      "title": "[dshplugin.world] list this",
+      "bodyTemplate": "Requesting a listing on dshplugin.world.\n\n{descEn}\n\n- Repository: {repoUrl}\n- Install: `dsh plugin --profile <profile> add {pkg}`\n- License: MIT\n"
+    }
+  ],
+  "forms": [
+    {
+      "id": "dsh-pub",
+      "name": "dsh.pub",
+      "url": "https://dsh.pub/en/submit/",
+      "note": "自动收录优先；人工提交会被判 already_listed"
+    },
+    {
+      "id": "dshplugin-dev",
+      "name": "dshplugin.dev",
+      "url": "https://dshplugin.dev/submit",
+      "returns": "reference id + Pending editorial review",
+      "note": "人工审核，不自动发布"
+    },
+    {
+      "id": "dsh-plugin-store",
+      "name": "DSH Plugin Store",
+      "url": "https://dshpluginstore.com/submit",
+      "fields": { "repo": "url", "summary": "必填 ≤200 字符", "category": "必选（UI & Themes）", "notes": "可选", "email": "可选" },
+      "note": "⚠️ 提交成功会**清空表单**，回执是表单下方绿字 `Received — we review every submission by hand…`；表单含蜜罐字段 botcheck（被自动填充会被丢弃）"
+    }
+  ]
+}

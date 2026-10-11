@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.js text
+*.mjs text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+*.png binary
+*.jpg binary
+*.zip binary

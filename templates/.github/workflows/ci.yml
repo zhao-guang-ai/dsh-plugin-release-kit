@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 语法检查
+        run: |
+          for f in $(find lib tools -name '*.js' -o -name '*.mjs' 2>/dev/null); do
+            node --check "$f"
+          done
+
+      - name: 清单一致性自检
+        run: node tools/check-manifest.mjs
