@@ -72,3 +72,7 @@ node scripts/submit-listings.mjs --owner <owner> --repo <repo> [--pkg <包名>] 
 - 提交是**以你名义的公开行为**：`submit-listings.mjs` 先干跑、给人确认，再 `--apply`。
 - 每个目录**只提交一次**；脚本会自动跳过已有提交。
 - 目录规则会变（门槛、字段、审核方式），以 `listings.json` 里的 `gate`/`note` 与你实际看到的页面为准。
+
+## 许可
+
+MIT，见 [LICENSE](./LICENSE)。`templates/` 里的文件可随意复制进你的插件仓库（无需署名）。
