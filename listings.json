@@ -46,6 +46,13 @@
       "name": "1024Store (deepseek1024.com)",
       "cadence": "增量 + 定期全量对账",
       "verify": { "type": "apiSearch", "url": "https://api.deepseek1024.com/v1/plugins/search?q={pkg}", "jsonPath": "total" }
+    },
+    {
+      "id": "dshplugin-world",
+      "name": "dshplugin.world",
+      "cadence": "topic 快照 + 人工精选",
+      "verify": { "type": "detailPage", "url": "https://dshplugin.world/plugins/{pkg}" },
+      "note": "人工精选站（全站仅约 29 个，对比 DSH Market 4.5k）。收录路径：①在**自己仓库**开 issue，标题必须是 `[dshplugin.world] list this`（不要关闭、不要改名，它按标题识别）；②到官方 Harness discussions 发一条带链接的帖子（可选，能加速人工注意）；③它也会按 `dsh-plugin` topic 做快照抓取。门槛：公开仓库、代码在仓库内（非二进制）、README 有一句话说明 + 以 `dsh plugin --profile` 开头的安装命令、并说明是否为 Cordis 插件。"
     }
   ],
   "submit": [

@@ -79,7 +79,8 @@ for (const item of conf.auto) {
       const { status, body } = await http(url)
       const hit = body.includes(pkg) || body.includes(`${owner}/${repo}`)
       listed = status === 200 && hit
-      detail = `HTTP ${status}${hit ? ' 含名称' : ' 无名称'}`
+      // 注意：非 200 页面（尤其 404 页）常回显请求路径，会把包名也带出来 —— 别把它当命中
+      detail = status === 200 ? (hit ? 'HTTP 200 含名称' : 'HTTP 200 但无名称') : `HTTP ${status}`
     } else if (v.type === 'githubJson') {
       const raw = gh(['api', `repos/${v.repo}/contents/${v.path}?ref=${v.ref}`, '--header', 'Accept: application/vnd.github.raw'])
       listed = raw.includes(render(v.match))
