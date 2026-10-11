@@ -10,10 +10,29 @@
 | **[RUNBOOK.md](./RUNBOOK.md)** | 主文档：五阶段流程（工程 → 本地验证 → GitHub → npm → 目录收录）+ 踩坑速查 + 症状对照表 |
 | **[listings.json](./listings.json)** | 机读目录登记表：每个目录的类型、路线、判据、格式、门槛 |
 | **[PR-TEXTS.md](./PR-TEXTS.md)** | 提交文案模板（一句话/长描述/兼容性说明/各目录正文/表单填写），含字符数核对 |
+| **[skill/SKILL.md](./skill/SKILL.md)** | **DSH skill 入口**：让任意会话直接加载整套流程（见下"装成 skill"） |
 | **[scripts/check-listings.mjs](./scripts/check-listings.mjs)** | 一键复查：已收录？PR/Issue 什么状态？ |
 | **[scripts/submit-listings.mjs](./scripts/submit-listings.mjs)** | 按表自动开 PR / Issue（默认干跑，内置去重与重试） |
+| **[scripts/install-skill.mjs](./scripts/install-skill.mjs)** | 把本工具包安装成用户级 DSH skill（一条命令，幂等） |
 | **[scripts/lib/gh.mjs](./scripts/lib/gh.mjs)** | 共享工具：自动定位 gh、重试、代理、章节插入 |
 | **[templates/](./templates)** | 直接抄进新插件仓库的模板：CI/release 工作流、`check-manifest.mjs`、诊断接收端、`package.json`、`cordis.patch.yml`、LICENSE、`.gitignore`/`.gitattributes` |
+
+## 装成 DSH skill（推荐）
+
+```sh
+node scripts/install-skill.mjs          # 装到 ~/.agents/skills/dsh-plugin-release（已存在时加 --force 覆盖）
+```
+
+装完**新开一个会话**，会话启动时会扫描 skill 目录，之后任意会话都能直接加载：
+
+```
+加载 dsh-plugin-release 这个 skill
+```
+
+skill 是**自包含**的（70 KB）：`SKILL.md` + `listings.json` + `scripts/` + `templates/` + `references/{runbook,texts}.md`，离线可用。
+它描述了什么时机该用它（中英触发词都有：上线插件 / 上架到插件市场 / 发布到 npm / publish a DSH plugin …），以及五阶段命令与高危坑的排查顺序。
+
+> 说明：skill 目录在**会话启动时**扫描，所以当前会话内新装的 skill 要等下一个会话才可见（本会话实测确实加载不到）。
 
 ## 快速开始（新插件）
 
