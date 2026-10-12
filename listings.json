@@ -107,7 +107,8 @@
       "name": "HackSing DSH Plugins",
       "route": "issue",
       "repo": "HackSing/dsh-plugins",
-      "title": "Submit a plugin: {pkg}",
+      "title": "[Plugin]: {pkg}",
+      "gate": "**标题必须以 `[Plugin]:` 开头**（实测：用别的标题它的自动收录流程识别不到，只能靠维护者手动补 plugin-submission 标签）。自动复核会检查**仓库公开简介（GitHub description）、license、README、插件结构** —— 仓库没有 description 会判「仓库缺少简介」而拒绝准入。被拒后可在本 issue 评论 `/recheck` 重审；14 天仍不满足则自动归档关闭（之后仍可重新提交）。通过后它会自动更新正式目录、双语 README 与 CHANGELOG 并回到本 issue 回复结果。",
       "bodyTemplate": "### Plugin repository\n{repoUrl}\n\n### Primary value\n{descEn}\n\n### Primary category\nUI\n\n### Installation and removal\nInstall: `dsh plugin --profile <profile> add {pkg}`\nRemove: `dsh plugin --profile <profile> remove {pkg}`\n\n### Compatibility and verification\n{compat}\n\n### Submission checklist\n- [x] Public repository with MIT license\n- [x] `package.json` declares `dsh.bundle.patch`; `cordis.patch.yml` at the root\n- [x] README documents install and usage\n- [x] Topics: `dsh-plugin` `deepseek-harness` `dsh` `dsh-bundle`\n"
     },
     {

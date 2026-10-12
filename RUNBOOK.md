@@ -127,6 +127,22 @@ git remote add origin git@github.com:<owner>/<repo>.git
 git push -u origin main
 ```
 
+### 3.1.1 立刻设置仓库简介与主页（**极易漏，实测会卡住收录**）
+
+```sh
+gh repo edit <owner>/<repo> \
+  --description "一句话说明（≤350 字符，中英并列更好）" \
+  --homepage "https://www.npmjs.com/package/<包名>"
+```
+
+**为什么必做**（真实踩坑）：
+
+- **所有市场都抓 GitHub 的 `description` 字段**。我们漏了这一步，结果 DSH Market 里 `"description": ""`、靠它自动生成的 `descriptionZh` 兜底 —— 展示质量下降。
+- **HackSing/dsh-plugins 的自动准入会直接拒**：机器人回复 *"自动复核不能准入：仓库缺少简介"*，要求补全后再评论 `/recheck`，14 天不满足就自动归档关闭。
+- 建议同一条命令把 `homepage` 指向 npm 包页，用户点进去就能看到版本与安装命令。
+
+> 漏了也别慌：随时可补（`gh repo edit` 或网页 About ⚙️），然后在对应 issue 里评论 `/recheck` 重审即可。
+
 ### 3.2 加 topic（**决定自动收录，务必做**）
 
 ```sh
@@ -226,6 +242,9 @@ git tag -a v0.1.1 -m "v0.1.1" && git push origin main --follow-tags
 > 完整清单、路线、格式要求见 **`listings.json`**（机读）与本文 §7。
 
 ### 5.2 提交规则要点（踩过的）
+
+- **HackSing/dsh-plugins 的 issue 标题必须以 `[Plugin]:` 开头** —— 用别的标题（如 `Submit a plugin: …`）它的自动收录流程**识别不到**，只能靠维护者手动补标签。其自动复核还会查「仓库公开简介、license、README、插件结构」，被拒后在 issue 里评论 `/recheck` 重审（14 天不满足自动归档）。
+- **GitHub 仓库简介（description）缺失会卡住收录**：见 §3.1.1。
 
 - **仓库必须满 1 天**：`awesome-dsh-plugin` 的 CI 硬门槛（不足会红）。
 - **dsh.pub 不需要提交**：它按 topic 自动同步 + 静态契约校验，人工提交会被判 `already_listed`。
