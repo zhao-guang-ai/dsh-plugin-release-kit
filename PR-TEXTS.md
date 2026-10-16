@@ -28,12 +28,12 @@ Selection quoting for DSH conversations: quote a passage and the model gets the 
 
 **EN**
 ```
-<插件名> adds selection quoting and anchored annotations to DSH conversations. Select text in the transcript, write a short comment, and an anchored quote reference enters the composer; a quote bar under the composer jumps back to the source message and highlights it, and the quote block the model receives names the turn and the speaker's role, so a multi-turn conversation never has to guess which message was meant. Client-side only (no network access, no credentials); anchors persist in localStorage. MIT.
+<插件名> adds selection quoting and anchored annotations to DSH conversations. Select text in the transcript, write a short comment, and an anchored quote reference enters the composer; a quote bar under the composer jumps back to the source message and highlights it, and the quote block the model receives names the turn and the speaker's role, so a multi-turn conversation never has to guess which message was meant. Client-side only: no external services and no credentials (on load it sends a single probe to http://127.0.0.1:47821 for local dev diagnostics, and stays silent when nothing listens); anchors persist in localStorage. MIT.
 ```
 
 **ZH**
 ```
-<插件名> 为 DSH 会话加上"划词 → 批注 → 引用"：选中消息里的文字即可批注，带锚点的引用进入输入框；输入框下方的引用条可跳回原文并高亮；发送的引用块标明出处轮次与角色，多轮对话中模型不必再猜你指的是哪一处。纯客户端、零网络请求、不碰凭证，锚点在 localStorage 持久化，MIT。
+<插件名> 为 DSH 会话加上"划词 → 批注 → 引用"：选中消息里的文字即可批注，带锚点的引用进入输入框；输入框下方的引用条可跳回原文并高亮；发送的引用块标明出处轮次与角色，多轮对话中模型不必再猜你指的是哪一处。纯客户端、不访问外部服务、不碰凭证（启动时向本机 http://127.0.0.1:47821 发一次诊断探测，探测不到就静默），锚点在 localStorage 持久化，MIT。
 ```
 
 ---
@@ -41,12 +41,17 @@ Selection quoting for DSH conversations: quote a passage and the model gets the 
 ## 3. 兼容性与核验说明（表单的 "Anything we should verify" / issue 的 Compatibility 字段）
 
 ```
-Client-side plugin only: no network access, no credentials; it stores a small quote-anchor map in localStorage (≤60 entries per session) and nothing else.
+Client-side plugin only: no external services, no credentials. It sends **one probe to http://127.0.0.1:47821 on load** (local dev diagnostics) and stays completely silent when nothing listens there; it also stores a small quote-anchor map in localStorage (≤60 entries per session). Nothing else leaves the process.
 
 Verified on DSH <版本> (<profile> profile, <系统>), full flow: select text → annotate → quote chip → click to jump back and highlight → sent quote block.
 
 Note: it is an MIT fork of <上游 owner/repo> and keeps the upstream attribution. Upstream <版本> fails silently on <DSH 版本> because four interfaces it relies on changed (missing `inject: ['slots']`; `conversation.chat.turnTail` became a list slot; `input.insertReference` no longer exists; `useSessions(s => s.current)` is always undefined). This fork fixes those and adds <新能力>.
 ```
+
+> ⚠️ **别说"零网络访问"**：这个插件默认会向 `127.0.0.1:47821` 发一次探测（本地诊断；探测不到就静默）。
+> 我们因为写了 "no network access"，被 `0xsline/awesome-deepseek-harness` 的维护者在合并时改成
+> *"the client enables localhost diagnostic requests by default"* —— 收录信息必须与代码一致，
+> 差一句话就会被打回或改写。
 
 > 若是原创插件，把 Note 换成一句能力边界说明即可（例如"requires a client-capable profile (Web UI); no host-side tooling or external services"）。
 
@@ -91,7 +96,7 @@ Adds `data/plugins/<owner>__<repo>.yml` — one entry, no other files touched.
 
 在 `PLUGINS.md` 的 `## 🔌 单插件` 表格**末尾**加一行：
 ```
-| <pkg> | [<owner>/<repo>](https://github.com/<owner>/<repo>) | <ZH 说明：一句话 + 关键行为 + 纯客户端/零网络> | 待测 |
+| <pkg> | [<owner>/<repo>](https://github.com/<owner>/<repo>) | <ZH 说明：一句话 + 关键行为 + 纯客户端/不访问外部服务（如默认有 localhost 探测，务必写明）> | 待测 |
 ```
 **PR 标题**：`docs: 登记 <pkg>`　**正文**：说明"仅改动 PLUGINS.md 一行"。
 
